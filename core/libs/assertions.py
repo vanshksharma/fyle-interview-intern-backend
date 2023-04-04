@@ -1,4 +1,4 @@
-from .exceptions import FyleError
+from .exceptions import FyleError, JSONParseException,DataNotFoundException,IDValidationException
 
 
 def base_assert(error_code, msg):
@@ -23,3 +23,12 @@ def assert_valid(cond, msg='BAD_REQUEST'):
 def assert_found(_obj, msg='NOT_FOUND'):
     if _obj is None:
         base_assert(404, msg)
+
+def json_assert(error_code, msg):
+    raise JSONParseException(status_code=error_code, message=msg)
+
+def data_assert(error_code, msg):
+    raise DataNotFoundException(status_code=error_code, message=msg)
+
+def id_assert(error_code, msg):
+    raise IDValidationException(status_code=error_code, message=msg)
