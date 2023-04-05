@@ -79,3 +79,22 @@ class Assignment(db.Model):
     @classmethod
     def get_assignments_submitted_to_teacher(cls, teacher_id):
         return cls.filter(cls.teacher_id==teacher_id and cls.state==AssignmentStateEnum.SUBMITTED).all()
+    
+    @classmethod
+    def _grade(cls,principal,_id,grade):
+        assignment=Assignment.get_by_id(_id)
+        assertions.assert_found(assignment, 'No assignment with this id was found')
+        assertions.assert_valid(assignment.state == AssignmentStateEnum.SUBMITTED,
+                                    'only assignment in submitted state can be edited')
+        assertions.assert_valid(assignment.teacher_id == principal.teacher_id, 'This assignment belongs to some other teacher')
+
+        assignment.state=AssignmentStateEnum.GRADED
+        try:
+            grade=grade.upper()
+            assignment.grade=GradeEnum[grade]
+        except:
+            assertions.validation_assert("Invalid grade provided")
+        
+        db.session.flush()
+        return assignment
+

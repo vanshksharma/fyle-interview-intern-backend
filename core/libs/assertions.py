@@ -1,4 +1,5 @@
-from .exceptions import FyleError, JSONParseException,DataNotFoundException,IDValidationException
+from .exceptions import FyleError, JSONParseException,DataNotFoundException,IDValidationException,PayloadValidationException
+from marshmallow.exceptions import ValidationError
 
 
 def base_assert(error_code, msg):
@@ -32,3 +33,9 @@ def data_assert(error_code, msg):
 
 def id_assert(error_code, msg):
     raise IDValidationException(status_code=error_code, message=msg)
+
+def payload_assert(error_code, msg):
+    raise PayloadValidationException(status_code=error_code, message=msg)
+
+def validation_assert(msg):
+    raise ValidationError(message=msg)
