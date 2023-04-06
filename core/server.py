@@ -3,7 +3,7 @@ from marshmallow.exceptions import ValidationError
 from core import app
 from core.apis.assignments import student_assignments_resources,teacher_assignments_resources
 from core.libs import helpers
-from core.libs.exceptions import FyleError,JSONParseException,DataNotFoundException,IDValidationException,PayloadValidationException
+from core.libs.exceptions import FyleError,JSONParseException,DataNotFoundException,IDValidationException
 from werkzeug.exceptions import HTTPException
 
 from sqlalchemy.exc import IntegrityError
@@ -36,10 +36,6 @@ def handle_error(err):
         return jsonify(
             error=err.__class__.__name__, message=str(err.orig)
         ), 400
-    elif isinstance(err, HTTPException):
-        return jsonify(
-            error=err.__class__.__name__, message=str(err)
-        ), err.code
     elif isinstance(err,JSONParseException):
         return jsonify(
             error=err.__class__.__name__, message=err.message
@@ -49,10 +45,6 @@ def handle_error(err):
             error=err.__class__.__name__, message=err.message
         ),err.status_code
     elif isinstance(err,IDValidationException):
-        return jsonify(
-            error=err.__class__.__name__, message=err.message
-        ),err.status_code
-    elif isinstance(err,PayloadValidationException):
         return jsonify(
             error=err.__class__.__name__, message=err.message
         ),err.status_code

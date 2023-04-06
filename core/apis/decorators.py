@@ -25,6 +25,7 @@ def auth_principal(func):
         p_str = request.headers.get('X-Principal')
         assertions.assert_auth(p_str is not None, 'principal not found')
         
+        # Checking if Valid JSON is provided as per the rules
         try:
             p_dict = json.loads(p_str)
         except:

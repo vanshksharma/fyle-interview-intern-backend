@@ -12,6 +12,8 @@ teacher_assignments_resources = Blueprint('teacher_assignments_resources', __nam
 @decorators.auth_principal
 def list_assignments(p):
     """Returns list of submitted assignments to teacher"""
+
+    # checking if valid id was provided of not such as "1 2" is invalid but "12" is valid
     try:
         teacher_id=int(p.teacher_id)
     except:
@@ -27,6 +29,12 @@ def list_assignments(p):
 @decorators.accept_payload
 @decorators.auth_principal
 def grade_assignment(p, incoming_payload):
+    
+    # checking if valid id was provided of not such as "1 2" is invalid but "12" is valid
+    try:
+        p.teacher_id=int(p.teacher_id)
+    except:
+        assertions.id_assert(400,"Teacher ID is not integer")
     grade_assignment_payload=AssignmentGradeSchema().load(incoming_payload)
     graded_assignment=Assignment._grade(
         _id=grade_assignment_payload.id,

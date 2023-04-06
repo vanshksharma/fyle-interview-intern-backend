@@ -37,6 +37,8 @@ class AssignmentSubmitSchema(Schema):
         # pylint: disable=unused-argument,no-self-use
         return GeneralObject(**data_dict)
 
+
+# Created a Custom schema for grading an assignment which receives the id and grade and raises Validation Error is something invalid is provided
 class AssignmentGradeSchema(Schema):
     class Meta:
         unknown=EXCLUDE

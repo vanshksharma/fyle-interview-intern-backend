@@ -100,3 +100,77 @@ def test_grade_assignment_draft_assignment(client, h_teacher_1):
     data = response.json
 
     assert data['error'] == 'FyleError'
+
+# My tests
+
+def test_get_assignments_invalid_header_get(client, invalid_teacher):
+    response = client.get(
+        '/teacher/assignments',
+        headers=invalid_teacher
+    )
+
+    assert response.status_code == 400
+    data = response.json
+
+    assert data['error'] == 'IDValidationException'
+
+def test_get_assignments_invalid_header_post(client, invalid_teacher):
+    response = client.post(
+        '/teacher/assignments/grade',
+        headers=invalid_teacher,
+        json={
+            "id":1,
+            "grade":"A"
+        }
+    )
+
+    assert response.status_code == 400
+    data = response.json
+
+    assert data['error'] == 'IDValidationException'
+
+def test_get_assignments_invalid_assignment_id(client, h_teacher_2):
+    response = client.post(
+        '/teacher/assignments/grade',
+        headers=h_teacher_2,
+        json={
+            "id":"1 2",
+            "grade":"A"
+        }
+    )
+
+    assert response.status_code == 400
+    data = response.json
+
+    assert data['error'] == 'ValidationError'
+
+
+
+def test_get_assignments_empty(client, no_teacher):
+    response = client.get(
+        '/teacher/assignments',
+        headers=no_teacher
+    )
+
+    assert response.status_code == 601
+    data = response.json
+
+    assert data['error'] == 'DataNotFoundException'
+
+def test_successful_grade(client, h_teacher_1):
+    response = client.post(
+        '/teacher/assignments/grade',
+        headers=h_teacher_1,
+        json={
+            "id":1,
+            "grade":"A"
+        }
+    )
+
+    assert response.status_code == 200
+    data = response.json['data']
+
+    assert data['id'] == 1
+    assert data['grade'] == "A"
+    assert data['state'] == "GRADED"
+    assert data['teacher_id'] == 1
